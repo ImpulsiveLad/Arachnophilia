@@ -59,7 +59,7 @@ namespace Arachnophilia
         [DataMember] public SyncedEntry<int> MinSpooledBodies { get; private set; }
         [DataMember] public SyncedEntry<int> MaxSpooledBodies { get; private set; }
 
-        public SyncConfig(ConfigFile cfg) : base("CustomDeathPenalty")
+        public SyncConfig(ConfigFile cfg) : base("Arachnophilia")
         {
             ConfigManager.Register(this);
 
