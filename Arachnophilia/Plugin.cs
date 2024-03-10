@@ -14,7 +14,7 @@ namespace Arachnophilia
     {
         private const string modGUID = "impulse.Arachnophilia";
         private const string modName = "Arachnophilia";
-        private const string modVersion = "1.6.1";
+        private const string modVersion = "1.7.0";
         private readonly Harmony harmony = new Harmony(modGUID);
 
         public ManualLogSource mls;
@@ -58,67 +58,98 @@ namespace Arachnophilia
         [DataMember] public SyncedEntry<int> SpiderHp { get; private set; }
         [DataMember] public SyncedEntry<int> MinSpooledBodies { get; private set; }
         [DataMember] public SyncedEntry<int> MaxSpooledBodies { get; private set; }
+        [DataMember] public SyncedEntry<float> MinWallHeight { get; private set; }
+        [DataMember] public SyncedEntry<float> MaxWallHeight { get; private set; }
+        [DataMember] public SyncedEntry<float> FloorCheck { get; private set; }
+      //  [DataMember] public SyncedEntry<float> SpiderChillin { get; private set; }
 
         public SyncConfig(ConfigFile cfg) : base("Arachnophilia")
         {
             ConfigManager.Register(this);
 
-            SpiderSetupSpeed = cfg.BindSyncedEntry("General",
+            SpiderSetupSpeed = cfg.BindSyncedEntry("1.General",
             "Spider Setup Speed",
             1.5f,
             "Speed multiplier applied to the spider while it is not chasing a player.");
-            SpiderChaseSpeed = cfg.BindSyncedEntry("General",
+            SpiderChaseSpeed = cfg.BindSyncedEntry("1.General",
                         "Spider Chase Speed",
                         1.25f,
                         "Speed multiplier applied to the spider while it is chasing a player.");
-            SpiderDamage = cfg.BindSyncedEntry("General",
+            SpiderDamage = cfg.BindSyncedEntry("1.General",
                         "Spider Damage",
                         35,
                         "The damage dealt to players by the spider.");
-            SpiderHp = cfg.BindSyncedEntry("General",
+            SpiderHp = cfg.BindSyncedEntry("1.General",
                         "Spider HP",
                         6,
                         "Health of the spider.");
-            MinSpooledBodies = cfg.BindSyncedEntry("Features",
+            MinSpooledBodies = cfg.BindSyncedEntry("4.Cocoons",
                         "Min Extra Cocoons",
                         3,
                         "The minimum number of bodies the spider spawns in and decorates its nest with during its setup phase. Set both min and max to 0 to disable. Keep in mind that this value should be higher than Min Web Count, excessively high values may result in lag, Min should be less than Max.");
-            MaxSpooledBodies = cfg.BindSyncedEntry("Features",
+            MaxSpooledBodies = cfg.BindSyncedEntry("4.Cocoons",
                         "Max Extra Cocoons",
                         4,
                         "The maximum number of bodies the spider spawns in and decorates its nest with during its setup phase. Set both min and max to 0 to disable. Keep in mind that this value should be higher than Min Web Count, excessively high values may result in lag, Min should be less than Max.");
-            MinWebCount = cfg.BindSyncedEntry("Webs",
+            MinWebCount = cfg.BindSyncedEntry("2.Webs",
                         "Min Web Count",
                         20,
                         "The minimum amount of webs a given spider can place, Min should be less than Max.");
-            MaxWebCount = cfg.BindSyncedEntry("Webs",
+            MaxWebCount = cfg.BindSyncedEntry("2.Webs",
                         "Max Web Count",
                         25,
                         "The maximum amount of webs a given spider can place, Min should be less than Max.");
-            MinWebLength = cfg.BindSyncedEntry("Webs",
+            MinWebLength = cfg.BindSyncedEntry("2.Webs",
                         "Min Web Length",
                         2f,
                         "The minimum length a web can be in units, !! Keep in mind that the smaller the difference between the min and max length, the less spots a spider could successfully place a web!!");
-            MaxWebLength = cfg.BindSyncedEntry("Webs",
+            MaxWebLength = cfg.BindSyncedEntry("2.Webs",
                         "Max Web Length",
                         10f,
                         "The maximum length a web can be in units, !! Keep in mind that the smaller the differnce between the min and max length, the less spots a spider could successfully place a web!!");
-            MinWebDistance = cfg.BindSyncedEntry("Webs",
+            MinWebDistance = cfg.BindSyncedEntry("2.Webs",
                         "Min Distance Between Webs",
                         0.5f,
                         "This controls the distance in units a spider must be from the closest web in order to place a new one, a lower value will make webs closely knit, a higher value will make webs spaced further apart.");
-            WebPlaceInterval = cfg.BindSyncedEntry("Webs",
+            WebPlaceInterval = cfg.BindSyncedEntry("2.Webs",
                        "Web Placement Interval",
                        2f,
                        "How long in seconds the spider should wait after placing a web to place another");
-            WebTimeRange = cfg.BindSyncedEntry("Webs",
+            WebTimeRange = cfg.BindSyncedEntry("2.Webs",
                         "Web Placement Interval Variation",
                         0.5f,
                         "This increases the interval and gives it some variation, the Web Placement Interval plus this value will be the max interval, the min interval will be the Web Placement Interval plus half of this value. (2 & 0.5 for these settings will result in a 2.25-2.5 second interval, 10 & 7 will result in a 13.5-17 second interval. etc)");
-            FailedWebTrapTime = cfg.BindSyncedEntry("Webs",
+            FailedWebTrapTime = cfg.BindSyncedEntry("2.Webs",
                         "Failed Web Placement Cooldown",
                         0.1f,
                         "How long in seconds spider should wait after failing to place a web before attempting to place another.");
+            MinWallHeight = cfg.BindSyncedEntry("3.Walls",
+                        "Min Wall Height",
+                        2f,
+                        "This value more or less controls the absolute smallest vertical surface that the spider can consider to be a wall. Keep in mind that if this value is too high, the spider will be unable to find valid walls and its ai will break. If it is too low then the spider will try to climb small props like chairs. Must be larger than 1.3.");
+            MaxWallHeight = cfg.BindSyncedEntry("3.Walls",
+                        "Max Wall Height",
+                        22f,
+                        "This value more or less controls the absolute tallest vertical surface that the spider can consider to be a wall. Min should be less than Max.");
+            FloorCheck = cfg.BindSyncedEntry("3.Walls",
+                        "Floor check",
+                        12f,
+                        "When the spider finds a possible wall, it will check if there is a floor below it. If there is no floor within this value below the wall position, the spider will not climb the wall.");
+            //SpiderChillin = cfg.BindSyncedEntry("3.Walls",
+           //             "Spider Wall Position",
+             //           20f,
+              //          "This value controls what % down a wall a spider will idle, 25% will be a fourth down the wall, three-fourths up the wall.");
+            AcceptableRanges();
+        }
+        public void AcceptableRanges()
+        {
+            float minWallHeight = MinWallHeight.Value;
+            if (minWallHeight < 1.3f) minWallHeight = 1.3f;
+            MinWallHeight.Value = minWallHeight;
+
+            float maxWallHeight = MaxWallHeight.Value;
+            if (maxWallHeight < 1.5f) maxWallHeight = 1.5f;
+            MaxWallHeight.Value = maxWallHeight;
         }
     }
 }

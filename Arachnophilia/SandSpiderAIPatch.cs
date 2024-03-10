@@ -242,6 +242,22 @@ namespace Arachnophilia.Patches
     [HarmonyPatch("GetWallPositionForSpiderMesh")]
     public static class SandSpiderGetWallPositionForSpiderMeshPatch
     {
+        public static float wallHeight;
+        public static float carryWallHeight;
+        public static Dictionary<SandSpiderAI, float> numValues = new Dictionary<SandSpiderAI, float>();
+        [HarmonyPostfix]
+        public static void Postfix(SandSpiderAI __instance)
+        {
+            if (numValues.TryGetValue(__instance, out float num))
+            {
+
+
+             //   wallHeight = ((num + 1.3f) - (__instance.abdomen.position.y - 0.6f)) * (SyncConfig.Instance.SpiderChillin.Value / 100);
+                float WallHeight = wallHeight;
+                if (WallHeight < 1.3f) WallHeight = 1.3f;
+                wallHeight = WallHeight;
+            }
+        }
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = new List<CodeInstruction>(instructions);
@@ -254,7 +270,11 @@ namespace Arachnophilia.Patches
 
                     if (operandValue == 6f)
                     {
-                        codes[i].operand = 1.5f;
+                        codes[i].operand = SyncConfig.Instance.MinWallHeight.Value;
+                    }
+                    else if (operandValue == 22f)
+                    {
+                        codes[i].operand = SyncConfig.Instance.MaxWallHeight.Value;
                     }
                     else if (operandValue == 10f)
                     {
@@ -264,6 +284,14 @@ namespace Arachnophilia.Patches
                     {
                         codes[i].operand = 100.1f;
                     }
+                    else if (operandValue == 7f)
+                    {
+                        codes[i].operand = SyncConfig.Instance.FloorCheck.Value;
+                    }
+                  // else if (operandValue == 1.3f)
+                  //  {
+                  //      codes[i].operand = wallHeight;
+                   // }
                 }
             }
             return codes.AsEnumerable();
