@@ -9,8 +9,7 @@ using UnityEngine;
 
 namespace Arachnophilia.Patches
 {
-    [HarmonyPatch(typeof(SandSpiderAI))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(typeof(SandSpiderAI), "Start")]
     internal class SandSpiderStartPatch
     {
         static void Postfix(SandSpiderAI __instance)
@@ -19,8 +18,7 @@ namespace Arachnophilia.Patches
             __instance.enemyHP = SyncConfig.Instance.SpiderHp.Value;
         }
     }
-    [HarmonyPatch(typeof(SandSpiderAI))]
-    [HarmonyPatch("AttemptPlaceWebTrap")]
+    [HarmonyPatch(typeof(SandSpiderAI), "AttemptPlaceWebTrap")]
     internal class SandSpiderAttemptPlaceWebTrapPatch : GrabbableObject
     {
         static bool Prefix(SandSpiderAI __instance)
@@ -61,8 +59,7 @@ namespace Arachnophilia.Patches
         public Dictionary<SandSpiderAI, bool> coroutineStartedFlags = new Dictionary<SandSpiderAI, bool>();
         public Dictionary<SandSpiderAI, int> randomSpooledBodies = new Dictionary<SandSpiderAI, int>();
     }
-    [HarmonyPatch(typeof(SandSpiderAI))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(typeof(SandSpiderAI), "Update")]
     internal class SandSpiderUpdatePatch
     {
         static SandSpiderState state = new SandSpiderState();
@@ -238,26 +235,9 @@ namespace Arachnophilia.Patches
             return codes.AsEnumerable();
         }
     }
-    [HarmonyPatch(typeof(SandSpiderAI))]
-    [HarmonyPatch("GetWallPositionForSpiderMesh")]
+    [HarmonyPatch(typeof(SandSpiderAI), "GetWallPositionForSpiderMesh")]
     public static class SandSpiderGetWallPositionForSpiderMeshPatch
     {
-        public static float wallHeight;
-        public static float carryWallHeight;
-        public static Dictionary<SandSpiderAI, float> numValues = new Dictionary<SandSpiderAI, float>();
-        [HarmonyPostfix]
-        public static void Postfix(SandSpiderAI __instance)
-        {
-            if (numValues.TryGetValue(__instance, out float num))
-            {
-
-
-             //   wallHeight = ((num + 1.3f) - (__instance.abdomen.position.y - 0.6f)) * (SyncConfig.Instance.SpiderChillin.Value / 100);
-                float WallHeight = wallHeight;
-                if (WallHeight < 1.3f) WallHeight = 1.3f;
-                wallHeight = WallHeight;
-            }
-        }
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = new List<CodeInstruction>(instructions);
@@ -288,17 +268,12 @@ namespace Arachnophilia.Patches
                     {
                         codes[i].operand = SyncConfig.Instance.FloorCheck.Value;
                     }
-                  // else if (operandValue == 1.3f)
-                  //  {
-                  //      codes[i].operand = wallHeight;
-                   // }
                 }
             }
             return codes.AsEnumerable();
         }
     }
-    [HarmonyPatch(typeof(SandSpiderAI))]
-    [HarmonyPatch("GrabBody")]
+    [HarmonyPatch(typeof(SandSpiderAI), "GrabBody")]
     public static class SandSpiderAIGrabBodyPatch
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

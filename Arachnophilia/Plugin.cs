@@ -2,8 +2,8 @@
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using CSync.Extensions;
 using CSync.Lib;
-using CSync.Util;
 using HarmonyLib;
 using System.Runtime.Serialization;
 
@@ -14,7 +14,7 @@ namespace Arachnophilia
     {
         private const string modGUID = "impulse.Arachnophilia";
         private const string modName = "Arachnophilia";
-        private const string modVersion = "1.7.0";
+        private const string modVersion = "1.8.0";
         private readonly Harmony harmony = new Harmony(modGUID);
 
         public ManualLogSource mls;
@@ -61,7 +61,6 @@ namespace Arachnophilia
         [DataMember] public SyncedEntry<float> MinWallHeight { get; private set; }
         [DataMember] public SyncedEntry<float> MaxWallHeight { get; private set; }
         [DataMember] public SyncedEntry<float> FloorCheck { get; private set; }
-      //  [DataMember] public SyncedEntry<float> SpiderChillin { get; private set; }
 
         public SyncConfig(ConfigFile cfg) : base("Arachnophilia")
         {
@@ -135,21 +134,6 @@ namespace Arachnophilia
                         "Floor check",
                         12f,
                         "When the spider finds a possible wall, it will check if there is a floor below it. If there is no floor within this value below the wall position, the spider will not climb the wall.");
-            //SpiderChillin = cfg.BindSyncedEntry("3.Walls",
-           //             "Spider Wall Position",
-             //           20f,
-              //          "This value controls what % down a wall a spider will idle, 25% will be a fourth down the wall, three-fourths up the wall.");
-            AcceptableRanges();
-        }
-        public void AcceptableRanges()
-        {
-            float minWallHeight = MinWallHeight.Value;
-            if (minWallHeight < 1.3f) minWallHeight = 1.3f;
-            MinWallHeight.Value = minWallHeight;
-
-            float maxWallHeight = MaxWallHeight.Value;
-            if (maxWallHeight < 1.5f) maxWallHeight = 1.5f;
-            MaxWallHeight.Value = maxWallHeight;
         }
     }
 }
