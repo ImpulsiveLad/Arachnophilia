@@ -14,7 +14,7 @@ namespace Arachnophilia
     {
         private const string modGUID = "impulse.Arachnophilia";
         private const string modName = "Arachnophilia";
-        private const string modVersion = "1.8.0";
+        private const string modVersion = "1.8.1";
         private readonly Harmony harmony = new Harmony(modGUID);
 
         public ManualLogSource mls;
@@ -36,7 +36,6 @@ namespace Arachnophilia
             harmony.PatchAll(typeof(SandSpiderOnCollideWithPlayerPatch));
             harmony.PatchAll(typeof(SandSpiderGetWallPositionForSpiderMeshPatch));
             harmony.PatchAll(typeof(SandSpiderAIGrabBodyPatch));
-            harmony.PatchAll(typeof(SyncConfig));
 
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
         }

@@ -62,9 +62,9 @@
     <Reference Include="BepInEx.AssemblyPublicizer.MSBuild, Version=0.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\BepInEx.AssemblyPublicizer.MSBuild.dll</HintPath>
     </Reference>
-    <Reference Include="com.sigurd.csync, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="com.sigurd.csync, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Downloads\Sigurd-CSync-4.0.2\BepInEx\plugins\CSync\com.sigurd.csync.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\com.sigurd.csync.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
